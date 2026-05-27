@@ -7,62 +7,96 @@ something or wins.
 
 ## Stage A - Memory And Fusion Basics
 
-### A.1. scale - [planned]
+### A.1. scale - [implemented, not benchmarked]
 
 Tiled elementwise hello-world. Teaches benchmark wiring, bytes-vs-FLOPs
 accounting, and Triton's program grid.
 
-### A.2. bias activation - [planned]
+### A.2. add - [scaffolded]
 
-Simple fusion: load, add bias, apply activation, store. Teaches when kernel
-fusion saves global memory traffic.
+Two-input elementwise add. Teaches multi-input memory accounting:
+read `x`, read `y`, write output.
 
-### A.3. RMSNorm - [planned]
+### A.3. bias_add - [scaffolded]
 
-Row-wise reduction plus elementwise normalize. Teaches reductions, dtype policy,
-and a real memory-bandwidth target.
+Broadcasted vector add, typically `(M, H) + (H,)`. Teaches broadcast indexing
+and the difference between logical shape and memory traffic.
 
-### A.4. softmax - [planned]
+### A.4. silu - [scaffolded]
+
+Unary activation. Teaches a slightly heavier elementwise body and how math cost
+starts to matter even for memory-shaped kernels.
+
+### A.5. silu_mul - [scaffolded]
+
+SwiGLU-style elementwise fusion: `silu(x) * gate`. Teaches why avoiding an
+intermediate activation write can beat composing library calls.
+
+### A.6. gelu - [scaffolded]
+
+Common transformer activation with a heavier scalar formula. Good for comparing
+Torch eager, `torch.compile`, JAX, and Triton on non-trivial elementwise math.
+
+## Stage B - Reductions
+
+### B.1. row_sum - [scaffolded]
+
+First row-wise reduction. Teaches reduction blocks and accumulation dtype.
+
+### B.2. row_max - [scaffolded]
+
+Same reduction shape as `row_sum`, but prepares the max pass used by softmax.
+
+### B.3. layernorm - [scaffolded]
+
+Mean, variance, normalize, affine. Teaches multi-reduction row kernels.
+
+### B.4. rmsnorm - [scaffolded]
+
+LLM-normalization primitive: mean-square reduction plus rescale. Good
+memory-bandwidth target before softmax.
+
+### B.5. softmax - [scaffolded]
 
 Stable row-wise softmax. Teaches max/sum reductions, numerical stability, and
 the setup for attention.
 
-## Stage B - Tensor Cores
+## Stage C - Tensor Cores
 
-### B.1. matmul - [planned]
+### C.1. matmul - [planned]
 
 Compare Torch/cuBLAS, JAX/XLA, and Triton matmul. The point is not to beat
 cuBLAS first; it is to understand tiling and tensor-core accounting.
 
-### B.2. fused matmul epilogue - [planned]
+### C.2. fused matmul epilogue - [planned]
 
 Matmul plus bias/activation/residual epilogue. Teaches where custom kernels
 can beat library calls by avoiding extra memory traffic.
 
-## Stage C - Transformer Kernels
+## Stage D - Transformer Kernels
 
-### C.1. RoPE - [planned]
+### D.1. RoPE - [planned]
 
 Memory-bound position transform and layout exercise.
 
-### C.2. SwiGLU - [planned]
+### D.2. SwiGLU - [planned]
 
 Elementwise fusion common in LLM MLP blocks.
 
-### C.3. FlashAttention-style attention - [planned]
+### D.3. FlashAttention-style attention - [planned]
 
 Online softmax, tiling over sequence, and memory-traffic reduction.
 
-## Stage D - Inference Kernels
+## Stage E - Inference Kernels
 
-### D.1. KV cache append/copy - [planned]
+### E.1. KV cache append/copy - [planned]
 
 Layout-sensitive serving primitive.
 
-### D.2. quant/dequant - [planned]
+### E.2. quant/dequant - [planned]
 
 Bandwidth-bound low-precision packing and unpacking.
 
-### D.3. MoE dispatch - [planned]
+### E.3. MoE dispatch - [planned]
 
 Routing, indexing, and irregular memory movement.
