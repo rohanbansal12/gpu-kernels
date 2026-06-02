@@ -91,16 +91,19 @@ def _print_table(
     print(f"  flops={flops:.3e}  bytes={nbytes:.3e}  intensity={intensity:.3f} F/B")
     print(f"  ridge point={ridge:.1f} F/B  ->  {regime(intensity, ridge)}")
     print()
-    print("  variant              med(us)   p99(us)    MFU%     BW%    binds        SoL%")
-    print("  -----------------------------------------------------------------------------")
+    print("  variant              med(us)   p99(us)      GB/s   TFLOP/s    MFU%     BW%   SoL%")
+    print("  --------------------------------------------------------------------------------")
     for name, br, roof in rows:
+        gb_s = _gb_per_s(nbytes, br.median_s)
+        tflops = _tflops_per_s(flops, br.median_s)
         print(
             f"  {name:<18}"
             f"{br.median_s * 1e6:9.2f}"
             f"{br.p99_s * 1e6:10.2f}"
+            f"{gb_s:10.1f}"
+            f"{tflops:10.2f}"
             f"{roof.mfu_pct * 100:8.1f}%"
             f"{roof.bw_pct * 100:8.1f}%"
-            f"  {roof.binds:<12}"
             f"{roof.sol_pct * 100:7.1f}%"
         )
 
@@ -149,6 +152,8 @@ def _write_history(
                     "sol_pct": roof.sol_pct,
                     "binds": roof.binds,
                     "seconds": roof.seconds,
+                    "gb_s": _gb_per_s(workload.nbytes, roof.seconds),
+                    "tflops": _tflops_per_s(workload.flops, roof.seconds),
                 },
             }
             for name, br, roof in rows
@@ -160,3 +165,11 @@ def _write_history(
     else:
         display_path = path
     print(f"\n  wrote {display_path}")
+
+
+def _gb_per_s(nbytes: int, seconds: float) -> float:
+    return nbytes / seconds / 1e9 if seconds else 0.0
+
+
+def _tflops_per_s(flops: int, seconds: float) -> float:
+    return flops / seconds / 1e12 if seconds else 0.0

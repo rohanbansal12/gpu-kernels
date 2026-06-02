@@ -28,3 +28,9 @@ def test_compare_runs_and_writes_history(tmp_path, monkeypatch) -> None:
     assert "python" in results
     records = list((tmp_path / "toy").glob("*.json"))
     assert len(records) == 1
+
+
+def test_git_sha_env_override(monkeypatch) -> None:
+    monkeypatch.setenv("GPU_KERNELS_GIT_SHA", "remote-sha-dirty")
+
+    assert _history.git_sha() == "remote-sha-dirty"

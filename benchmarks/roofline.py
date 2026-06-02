@@ -50,20 +50,6 @@ def rtx_4090(num_gpus: int = 1) -> HardwarePeak:
     )
 
 
-def a100_80gb(num_gpus: int = 1) -> HardwarePeak:
-    """Nominal A100 SXM 80GB profile, useful for cloud baselines."""
-    return HardwarePeak(
-        name="A100 SXM 80GB",
-        bf16_flops=312e12,
-        fp16_flops=312e12,
-        fp32_flops=19.5e12,
-        tf32_flops=156e12,
-        int8_ops=624e12,
-        memory_bw=2_039e9,
-        num_gpus=num_gpus,
-    )
-
-
 def h100_80gb(num_gpus: int = 1) -> HardwarePeak:
     """Nominal H100 SXM 80GB profile, useful for cloud baselines."""
     return HardwarePeak(
@@ -80,8 +66,8 @@ def h100_80gb(num_gpus: int = 1) -> HardwarePeak:
 
 PROFILES = {
     "rtx4090": rtx_4090,
-    "a100_80gb": a100_80gb,
     "h100_80gb": h100_80gb,
+    "h100": h100_80gb,
 }
 
 

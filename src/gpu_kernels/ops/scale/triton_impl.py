@@ -41,9 +41,9 @@ def _scale_kernel() -> Any:
     tl = import_module("triton.language")
 
     def kernel(
-        x_ptr: Any,
-        o_ptr: Any,
-        n_elements: Any,
+        x_ptr,
+        o_ptr,
+        n_elements,
         # Triton meta-parameters are conventionally uppercase.
         BLOCK_SIZE: tl.constexpr,  # noqa: N803  # pyright: ignore[reportInvalidTypeForm]
     ) -> None:

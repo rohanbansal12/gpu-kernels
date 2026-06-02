@@ -22,6 +22,12 @@ NVIDIA CUDA + Triton development:
 uv sync --extra cuda --group dev
 ```
 
+Modal remote GPU runs:
+
+```bash
+uv sync --extra cloud --group dev
+```
+
 If starting from an empty folder in the future, the equivalent bootstrap is:
 
 ```bash
@@ -30,6 +36,7 @@ uv add numpy
 uv add --optional torch torch
 uv add --optional jax jax
 uv add --optional triton triton
+uv add --optional modal modal
 uv add --dev pytest ruff pyright
 ```
 
@@ -64,3 +71,18 @@ PY
 
 For JAX comparisons, install the CUDA-enabled JAX wheel appropriate for the
 remote machine if the plain `jax` dependency does not expose the GPU backend.
+
+## Modal GPUs
+
+`modal_app.py` defines a Modal image with CUDA-capable Torch, JAX, and Triton,
+then ships the local `src/`, `benchmarks/`, and `tests/` trees into the remote
+container for fast source iteration.
+
+```bash
+uv run --extra cloud modal run modal_app.py::gpu_info --gpu H100!
+uv run --extra cloud modal run modal_app.py::correctness --op add
+uv run --extra cloud modal run modal_app.py::benchmark --gpu H100! --op add
+```
+
+Benchmark history is written remotely, enriched with the resolved GPU facts, and
+copied back into the local `bench_history/<op>/` directory.

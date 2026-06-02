@@ -18,6 +18,9 @@ jax = [
 triton = [
     "triton>=3.0",
 ]
+modal = [
+    "modal>=1.0",
+]
 local = [
     "gpu-kernels[torch,jax]",
 ]
@@ -26,6 +29,9 @@ cuda = [
 ]
 gpu = [
     "gpu-kernels[cuda]",
+]
+cloud = [
+    "gpu-kernels[modal]",
 ]
 
 [dependency-groups]

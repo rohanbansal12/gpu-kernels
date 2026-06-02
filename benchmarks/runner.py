@@ -13,6 +13,7 @@ import time
 from collections.abc import Callable, Sequence
 from dataclasses import dataclass
 from importlib import import_module
+from math import ceil
 from typing import Any, Literal
 
 Framework = Literal["python", "torch", "jax"]
@@ -43,9 +44,7 @@ class BenchResult:
 
     @property
     def p99_s(self) -> float:
-        if len(self.times_s) < 2:
-            return max(self.times_s)
-        return statistics.quantiles(self.times_s, n=100)[98]
+        return _nearest_rank_percentile(self.times_s, 0.99)
 
     @property
     def min_s(self) -> float:
@@ -178,3 +177,11 @@ def _keepalive(value: Any) -> None:
     # Hook for symmetry with JAX. Keeping a reference until after synchronization
     # avoids over-eager cleanup in tiny benchmark snippets.
     _ = value
+
+
+def _nearest_rank_percentile(values: Sequence[float], percentile: float) -> float:
+    if not values:
+        raise ValueError("percentile requires at least one value")
+    sorted_values = sorted(values)
+    index = max(0, min(len(sorted_values) - 1, ceil(percentile * len(sorted_values)) - 1))
+    return sorted_values[index]

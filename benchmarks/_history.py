@@ -2,11 +2,12 @@
 
 from __future__ import annotations
 
+import os
 import subprocess
 from pathlib import Path
 
 REPO_ROOT = Path(__file__).resolve().parent.parent
-HISTORY_DIR = REPO_ROOT / "bench_history"
+HISTORY_DIR = Path(os.environ.get("GPU_KERNELS_HISTORY_DIR", REPO_ROOT / "bench_history"))
 
 
 def git_sha() -> str | None:
@@ -15,6 +16,10 @@ def git_sha() -> str | None:
     History records are most useful when tied to a tree state. If this folder
     is not a git repo yet, return ``None`` and still allow local benchmarking.
     """
+    override = os.environ.get("GPU_KERNELS_GIT_SHA")
+    if override:
+        return override
+
     try:
         head = subprocess.run(
             ["git", "rev-parse", "HEAD"],

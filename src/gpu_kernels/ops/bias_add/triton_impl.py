@@ -60,11 +60,11 @@ def _bias_add_kernel() -> Any:
     tl = import_module("triton.language")
 
     def kernel(
-        x_ptr: Any,
-        bias_ptr: Any,
-        o_ptr: Any,
-        rows: Any,
-        hidden: Any,
+        x_ptr,
+        bias_ptr,
+        o_ptr,
+        rows,
+        hidden,
         # Triton meta-parameters are conventionally uppercase.
         BLOCK_M: tl.constexpr,  # noqa: N803  # pyright: ignore[reportInvalidTypeForm]
         BLOCK_N: tl.constexpr,  # noqa: N803  # pyright: ignore[reportInvalidTypeForm]
