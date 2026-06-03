@@ -2,23 +2,22 @@
 
 from __future__ import annotations
 
+from collections.abc import Callable
 from functools import cache
-from typing import Any
 
-from gpu_kernels import runtime
+import torch
 
 
-def silu_mul_torch(x: Any, gate: Any) -> Any:
+def silu_mul_torch(x: torch.Tensor, gate: torch.Tensor) -> torch.Tensor:
     """Eager Torch SiLU-multiply implementation."""
-    raise NotImplementedError("implement silu_mul_torch")
+    return torch.nn.functional.silu(x) * gate
 
 
-def silu_mul_torch_compile(x: Any, gate: Any) -> Any:
+def silu_mul_torch_compile(x: torch.Tensor, gate: torch.Tensor) -> torch.Tensor:
     """``torch.compile`` SiLU-multiply implementation, cached after first use."""
     return _compiled_silu_mul()(x, gate)
 
 
 @cache
-def _compiled_silu_mul() -> Any:
-    torch = runtime.require_torch()
+def _compiled_silu_mul() -> Callable[..., torch.Tensor]:
     return torch.compile(silu_mul_torch)

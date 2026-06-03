@@ -6,12 +6,10 @@ readme = "README.md"
 requires-python = ">=3.12"
 dependencies = [
     "numpy>=2.0",
+    "torch>=2.6",
 ]
 
 [project.optional-dependencies]
-torch = [
-    "torch>=2.6",
-]
 jax = [
     "jax>=0.5",
 ]
@@ -22,10 +20,10 @@ modal = [
     "modal>=1.0",
 ]
 local = [
-    "gpu-kernels[torch,jax]",
+    "gpu-kernels[jax]",
 ]
 cuda = [
-    "gpu-kernels[torch,jax,triton]",
+    "gpu-kernels[jax,triton]",
 ]
 gpu = [
     "gpu-kernels[cuda]",
@@ -61,6 +59,7 @@ ignore = ["E741"]
 include = ["src", "benchmarks", "tests"]
 pythonVersion = "3.12"
 typeCheckingMode = "basic"
+reportPrivateImportUsage = "none"
 
 [tool.pytest.ini_options]
 testpaths = ["tests"]

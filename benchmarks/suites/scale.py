@@ -4,6 +4,8 @@ from __future__ import annotations
 
 import argparse
 
+import torch
+
 from benchmarks.compare import compare
 from benchmarks.roofline import profile
 from benchmarks.runner import Variant
@@ -37,7 +39,6 @@ def main() -> None:
     args = parser.parse_args()
     validate_block_shapes(args, expected_axes=1, parser=parser)
 
-    torch = runtime.require_torch()
     device = runtime.torch_device(prefer_cuda=True)
     x_torch = runtime.torch_random((args.n,), dtype=args.dtype, device=device, seed=0)
     bytes_per_elem = torch.empty((), dtype=runtime.torch_dtype(args.dtype)).element_size()

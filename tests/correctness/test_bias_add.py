@@ -4,6 +4,7 @@ from typing import Any
 
 import numpy as np
 import pytest
+import torch
 
 from gpu_kernels import runtime
 from gpu_kernels.ops.bias_add import (
@@ -23,16 +24,14 @@ def test_bias_add_naive_numpy() -> None:
 
 
 @pytest.mark.torch
-def test_bias_add_torch_matches_naive(require_torch: Any) -> None:
-    torch = require_torch
+def test_bias_add_torch_matches_naive() -> None:
     x = torch.randn((8, 17), dtype=torch.float32)
     bias = torch.randn((17,), dtype=torch.float32)
     torch.testing.assert_close(bias_add_torch(x, bias), bias_add_naive(x, bias))
 
 
 @pytest.mark.torch
-def test_bias_add_torch_compile_matches_naive(require_torch: Any) -> None:
-    torch = require_torch
+def test_bias_add_torch_compile_matches_naive() -> None:
     x = torch.randn((8, 17), dtype=torch.float32)
     bias = torch.randn((17,), dtype=torch.float32)
     torch.testing.assert_close(bias_add_torch_compile(x, bias), bias_add_naive(x, bias))

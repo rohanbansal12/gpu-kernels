@@ -6,24 +6,23 @@ from functools import cache
 from importlib import import_module
 from typing import Any
 
+import torch
+
 from gpu_kernels import runtime
 
 DEFAULT_BLOCK = (1024,)
 
 
 def add_triton(
-    x: Any,
-    y: Any,
+    x: torch.Tensor,
+    y: torch.Tensor,
     *,
     block_shape: tuple[int, ...] = DEFAULT_BLOCK,
-) -> Any:
+) -> torch.Tensor:
     """Add two same-shaped CUDA tensors with a 1-D Triton program grid."""
-    torch = runtime.require_torch()
     triton = runtime.require_triton()
     if len(block_shape) != 1:
         raise ValueError(f"add_triton expects a 1-D block_shape, got {block_shape}")
-    if not isinstance(x, torch.Tensor) or not isinstance(y, torch.Tensor):
-        raise TypeError("add_triton expects Torch tensors")
     if not x.is_cuda or not y.is_cuda:
         raise RuntimeError("add_triton requires CUDA tensors")
     if x.shape != y.shape:

@@ -6,23 +6,22 @@ from functools import cache
 from importlib import import_module
 from typing import Any
 
+import torch
+
 from gpu_kernels import runtime
 
 DEFAULT_BLOCK = (1024,)
 
 
 def silu_triton(
-    x: Any,
+    x: torch.Tensor,
     *,
     block_shape: tuple[int, ...] = DEFAULT_BLOCK,
-) -> Any:
+) -> torch.Tensor:
     """Apply SiLU to a CUDA tensor with a 1-D Triton program grid."""
-    torch = runtime.require_torch()
     triton = runtime.require_triton()
     if len(block_shape) != 1:
         raise ValueError(f"silu_triton expects a 1-D block_shape, got {block_shape}")
-    if not isinstance(x, torch.Tensor):
-        raise TypeError("silu_triton expects a Torch tensor")
     if not x.is_cuda:
         raise RuntimeError("silu_triton requires a CUDA tensor")
 
@@ -50,7 +49,7 @@ def _silu_kernel() -> Any:
         pid = tl.program_id(0)
         offsets = pid * BLOCK_SIZE + tl.arange(0, BLOCK_SIZE)
         mask = offsets < n_elements
-        x = tl.load(x_ptr + offsets, mask=mask)
+        x = tl.load(x_ptr + offsets, mask=mask).to(tl.float32)
         tl.store(o_ptr + offsets, x * tl.sigmoid(x), mask=mask)
 
     return triton.jit(kernel)

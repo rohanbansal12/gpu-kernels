@@ -28,7 +28,7 @@ The project is intentionally shaped like a lab notebook with guardrails:
 
 This repo uses `uv`.
 
-Core harness only:
+Base Torch environment:
 
 ```bash
 uv sync --group dev
@@ -51,6 +51,17 @@ Modal remote GPU runs:
 ```bash
 uv sync --extra cloud --group dev
 ```
+
+VS Code/Pylance Triton autocomplete on macOS:
+
+```bash
+mkdir -p .external
+git clone --depth 1 https://github.com/triton-lang/triton .external/triton
+```
+
+The workspace setting in `.vscode/settings.json` points Pylance at
+`.external/triton/python` for editor hints without installing Triton locally.
+Kernel execution still runs through CUDA or Modal.
 
 More detail lives in [`docs/environment.md`](docs/environment.md).
 

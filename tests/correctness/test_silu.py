@@ -4,6 +4,7 @@ from typing import Any
 
 import numpy as np
 import pytest
+import torch
 
 from gpu_kernels import runtime
 from gpu_kernels.ops.silu import (
@@ -22,15 +23,13 @@ def test_silu_naive_numpy() -> None:
 
 
 @pytest.mark.torch
-def test_silu_torch_matches_naive(require_torch: Any) -> None:
-    torch = require_torch
+def test_silu_torch_matches_naive() -> None:
     x = torch.randn((32,), dtype=torch.float32)
     torch.testing.assert_close(silu_torch(x), silu_naive(x))
 
 
 @pytest.mark.torch
-def test_silu_torch_compile_matches_naive(require_torch: Any) -> None:
-    torch = require_torch
+def test_silu_torch_compile_matches_naive() -> None:
     x = torch.randn((32,), dtype=torch.float32)
     torch.testing.assert_close(silu_torch_compile(x), silu_naive(x))
 

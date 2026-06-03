@@ -2,17 +2,17 @@
 
 from __future__ import annotations
 
-from typing import Any
+import torch
 
 DEFAULT_BLOCK = (1, 1024)
 
 
 def rmsnorm_triton(
-    x: Any,
-    weight: Any,
+    x: torch.Tensor,
+    weight: torch.Tensor,
     *,
     eps: float = 1e-6,
     block_shape: tuple[int, ...] = DEFAULT_BLOCK,
-) -> Any:
+) -> torch.Tensor:
     """Hand-written Triton RMSNorm kernel."""
     raise NotImplementedError(f"implement rmsnorm_triton with eps={eps}, block_shape={block_shape}")

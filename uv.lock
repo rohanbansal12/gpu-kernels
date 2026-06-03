@@ -400,6 +400,7 @@ version = "0.1.0"
 source = { editable = "." }
 dependencies = [
     { name = "numpy" },
+    { name = "torch" },
 ]
 
 [package.optional-dependencies]
@@ -408,12 +409,10 @@ cloud = [
 ]
 cuda = [
     { name = "jax" },
-    { name = "torch" },
     { name = "triton" },
 ]
 gpu = [
     { name = "jax" },
-    { name = "torch" },
     { name = "triton" },
 ]
 jax = [
@@ -421,13 +420,9 @@ jax = [
 ]
 local = [
     { name = "jax" },
-    { name = "torch" },
 ]
 modal = [
     { name = "modal" },
-]
-torch = [
-    { name = "torch" },
 ]
 triton = [
     { name = "triton" },
@@ -443,16 +438,16 @@ dev = [
 [package.metadata]
 requires-dist = [
     { name = "gpu-kernels", extras = ["cuda"], marker = "extra == 'gpu'" },
+    { name = "gpu-kernels", extras = ["jax"], marker = "extra == 'local'" },
+    { name = "gpu-kernels", extras = ["jax", "triton"], marker = "extra == 'cuda'" },
     { name = "gpu-kernels", extras = ["modal"], marker = "extra == 'cloud'" },
-    { name = "gpu-kernels", extras = ["torch", "jax"], marker = "extra == 'local'" },
-    { name = "gpu-kernels", extras = ["torch", "jax", "triton"], marker = "extra == 'cuda'" },
     { name = "jax", marker = "extra == 'jax'", specifier = ">=0.5" },
     { name = "modal", marker = "extra == 'modal'", specifier = ">=1.0" },
     { name = "numpy", specifier = ">=2.0" },
-    { name = "torch", marker = "extra == 'torch'", specifier = ">=2.6" },
+    { name = "torch", specifier = ">=2.6" },
     { name = "triton", marker = "extra == 'triton'", specifier = ">=3.0" },
 ]
-provides-extras = ["torch", "jax", "triton", "modal", "local", "cuda", "gpu", "cloud"]
+provides-extras = ["jax", "triton", "modal", "local", "cuda", "gpu", "cloud"]
 
 [package.metadata.requires-dev]
 dev = [

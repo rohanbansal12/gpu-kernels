@@ -6,18 +6,19 @@ from functools import cache
 from importlib import import_module
 from typing import Any
 
+import torch
+
 from gpu_kernels import runtime
 
 DEFAULT_BLOCK = (1024,)
 
 
 def scale_triton(
-    x: Any,
+    x: torch.Tensor,
     *,
     block_shape: tuple[int, ...] = DEFAULT_BLOCK,
-) -> Any:
+) -> torch.Tensor:
     """Scale a CUDA tensor by two with a 1-D Triton program grid."""
-    torch = runtime.require_torch()
     triton = runtime.require_triton()
     if len(block_shape) != 1:
         raise ValueError(f"scale_triton expects a 1-D block_shape, got {block_shape}")

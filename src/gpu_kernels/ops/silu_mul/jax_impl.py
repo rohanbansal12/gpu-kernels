@@ -10,7 +10,8 @@ from gpu_kernels import runtime
 
 def silu_mul_jax(x: Any, gate: Any) -> Any:
     """Plain JAX SiLU-multiply implementation."""
-    raise NotImplementedError("implement silu_mul_jax")
+    jax = runtime.require_jax()
+    return jax.nn.silu(x) * gate
 
 
 def silu_mul_jax_jit(x: Any, gate: Any) -> Any:

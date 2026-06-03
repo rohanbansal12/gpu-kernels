@@ -4,7 +4,7 @@ This repo assumes `uv` owns the Python environment.
 
 ## Create Or Refresh The Local Environment
 
-Core harness only:
+Base Torch environment:
 
 ```bash
 uv sync --group dev
@@ -33,7 +33,7 @@ If starting from an empty folder in the future, the equivalent bootstrap is:
 ```bash
 uv init --package --python 3.12
 uv add numpy
-uv add --optional torch torch
+uv add torch
 uv add --optional jax jax
 uv add --optional triton triton
 uv add --optional modal modal
@@ -44,9 +44,9 @@ This repo already has `pyproject.toml`, so use `uv sync` day to day.
 
 ## Local Laptop
 
-On macOS or a CPU-only laptop, use the `local` extra. Expect Torch/JAX
-correctness tests to run. Triton/CUDA tests should skip unless you are on a
-CUDA-capable NVIDIA machine.
+On macOS or a CPU-only laptop, the base environment includes Torch. Use the
+`local` extra when you also want JAX comparisons. Triton/CUDA tests should skip
+unless you are on a CUDA-capable NVIDIA machine.
 
 ```bash
 uv sync --extra local --group dev

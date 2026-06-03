@@ -6,19 +6,20 @@ from functools import cache
 from importlib import import_module
 from typing import Any
 
+import torch
+
 from gpu_kernels import runtime
 
 DEFAULT_BLOCK = (16, 1024)
 
 
 def bias_add_triton(
-    x: Any,
-    bias: Any,
+    x: torch.Tensor,
+    bias: torch.Tensor,
     *,
     block_shape: tuple[int, ...] = DEFAULT_BLOCK,
-) -> Any:
+) -> torch.Tensor:
     """Add a 1-D bias vector to each row of a 2-D CUDA tensor."""
-    torch = runtime.require_torch()
     triton = runtime.require_triton()
     if len(block_shape) != 2:
         raise ValueError(f"bias_add_triton expects a 2-D block_shape, got {block_shape}")

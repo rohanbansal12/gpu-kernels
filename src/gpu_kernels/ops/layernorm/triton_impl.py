@@ -2,19 +2,19 @@
 
 from __future__ import annotations
 
-from typing import Any
+import torch
 
 DEFAULT_BLOCK = (1, 1024)
 
 
 def layernorm_triton(
-    x: Any,
-    weight: Any,
-    bias: Any,
+    x: torch.Tensor,
+    weight: torch.Tensor,
+    bias: torch.Tensor,
     *,
     eps: float = 1e-5,
     block_shape: tuple[int, ...] = DEFAULT_BLOCK,
-) -> Any:
+) -> torch.Tensor:
     """Hand-written Triton LayerNorm kernel."""
     raise NotImplementedError(
         f"implement layernorm_triton with eps={eps}, block_shape={block_shape}"

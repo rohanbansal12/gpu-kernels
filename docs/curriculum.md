@@ -7,30 +7,39 @@ something or wins.
 
 ## Stage A - Memory And Fusion Basics
 
-### A.1. scale - [implemented, not benchmarked]
+### A.1. scale - [complete]
 
 Tiled elementwise hello-world. Teaches benchmark wiring, bytes-vs-FLOPs
-accounting, and Triton's program grid.
+accounting, and Triton's program grid. H100 results show Torch eager wins for
+standalone scale; Triton is kept as a memory-bandwidth learning kernel and
+future fusion building block.
 
-### A.2. add - [scaffolded]
+### A.2. add - [complete]
 
 Two-input elementwise add. Teaches multi-input memory accounting:
-read `x`, read `y`, write output.
+read `x`, read `y`, write output. H100 results show Torch eager wins for
+standalone add; Triton is close but not justified unless fused.
 
-### A.3. bias_add - [scaffolded]
+### A.3. bias_add - [complete]
 
 Broadcasted vector add, typically `(M, H) + (H,)`. Teaches broadcast indexing
-and the difference between logical shape and memory traffic.
+and the difference between logical shape and memory traffic. H100 results show
+Triton narrowly beats compiler baselines for the target shape, but the margin is
+small; the main value is broadcast/fusion groundwork.
 
-### A.4. silu - [scaffolded]
+### A.4. silu - [complete]
 
 Unary activation. Teaches a slightly heavier elementwise body and how math cost
-starts to matter even for memory-shaped kernels.
+starts to matter even for memory-shaped kernels. H100 results show Torch eager
+wins standalone; Triton required bf16-to-fp32 math for sigmoid and remains
+useful as an activation/fusion building block.
 
-### A.5. silu_mul - [scaffolded]
+### A.5. silu_mul - [complete]
 
 SwiGLU-style elementwise fusion: `silu(x) * gate`. Teaches why avoiding an
-intermediate activation write can beat composing library calls.
+intermediate activation write can beat composing library calls. H100 results
+show Triton block 512 narrowly beats `torch_compile` at the target shape, making
+this the first clear fused elementwise Triton win in the curriculum.
 
 ### A.6. gelu - [scaffolded]
 

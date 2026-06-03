@@ -9,7 +9,7 @@ uv run ruff check .
 uv run pyright
 ```
 
-CPU-only harness environment:
+Base Torch CPU environment:
 
 ```bash
 uv sync --group dev
